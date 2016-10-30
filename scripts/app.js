@@ -1,84 +1,121 @@
 (function() {
     'use strict';
+    angular.module('ShoppingListCheckOffApp', [])
+        .controller('ToBuyController', ToBuyController)
+        .controller('AlreadyBoughtController', AlreadyBoughtController)
+        .service('ShoppingListCheckOffService', ShoppingListCheckOffService)
 
-    angular.module('ShoppingListApp', [])
-        .controller('ShoppingListController', ShoppingListController)
-        .provider('ShoppingList', ShoppingListProvider)
-        .config(Config);
+    ToBuyController.$inject = ["ShoppingListCheckOffService"];
+    function ToBuyController(ShoppingListCheckOffService){
+        var toBuy = this;
+        toBuy.items = ShoppingListCheckOffService.getItems();
+        toBuy.listsLength = ShoppingListCheckOffService.getListLength();
 
-    Config.$inject = ['ShoppingListProvider'];
-
-    function Config(ShoppingListProvider) {
-        ShoppingListProvider.defaults.maxItems = 5;
-    }
-
-    ShoppingListController.$inject = ['ShoppingList'];
-
-    function ShoppingListController(ShoppingList) {
-        var list = this;
-
-        list.items = ShoppingList.getItems();
-
-        list.itemName = "";
-        list.itemQuantity = "";
-
-        list.addItem = function() {
-            try {
-                ShoppingList.addItem(list.itemName, list.itemQuantity);
-            } catch (error) {
-
-                list.errorMessage = error.message;
-            }
+        toBuy.isEmpty = function(){
+            return toBuy.listsLength--;
         }
 
-        list.removeItem = function(itemIndex) {
-            ShoppingList.removeItem(itemIndex);
-        };
+        toBuy.removeItemBrought = function(itemIndex){
+            if(toBuy.isEmpty() == 0){
+                alert("Congratulation already brought all items");
+            } else {
+               ShoppingListCheckOffService.removeItem(itemIndex);
+            }
+        }
     }
 
+    AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+    function AlreadyBoughtController (ShoppingListCheckOffService){
+        var already = this;
+
+        already.itemsBroughtLength = ShoppingListCheckOffService.getBroughtLength() ;
+
+        already.items = ShoppingListCheckOffService.getItemsBrought();
+        alert(already.items.length);
+        already.broughtLength = already.items.length;
+    }
 
     // If not specified, maxItems assumed unlimited
-    function ShoppingListService(maxItems) {
+    function ShoppingListCheckOffService() {
         var service = this;
-
-        // List of shopping items
-        var items = [];
+        var itemsBrought = [];
+        var lengthOfBrought = itemsBrought.length ;
+        // List of items to buy
+        var items = [{
+            name: "Cookies",
+            quantity: 100
+        }, {
+            name: "Chips",
+            quantity: 100
+        },{
+            name: "Pepto Bismol",
+            quantity: 24
+        },{
+            name: "Drink sugary",
+            quantity: 24
+        },{
+            name: "Chocolate Chips",
+            quantity: 48
+        }];
 
         service.addItem = function(itemName, quantity) {
             if ((maxItems === undefined) ||
-                (maxItems !== undefined) && (items.length < maxItems)) {
+                (maxItems !== undefined) && items.length < maxItems) {
                 var item = {
-                    name: itemName,
+                    name: itemname,
                     quantity: quantity
                 };
                 items.push(item);
+
             } else {
-                throw new Error("Max items (" + maxItems + ") reached.");
+                throw new Error('Max items (' + maxItems + ") reached");
             }
         };
 
-        service.removeItem = function(itemIndex) {
-            items.splice(itemIndex, 1);
+        service.removeItem = function(itemIndex){
+            service.addBroughtItems(items[itemIndex]);
+            service.getBroughtLength();
+            items.splice(itemIndex,1);
         };
 
-        service.getItems = function() {
-            return items;
-        };
-    }
-
-
-    function ShoppingListProvider() {
-        var provider = this;
-
-        provider.defaults = {
-            maxItems: 100
+        service.getItems = function(){
+          return items;
         };
 
-        provider.$get = function() {
-            var shoppingList = new ShoppingListService(provider.defaults.maxItems);
+        service.addBroughtItems =function(item){
+            itemsBrought.push(item);
+        }
 
-            return shoppingList;
-        };
+        service.getItemsBrought = function(){
+            return itemsBrought;
+        }
+
+        service.getListLength = function(){
+            return items.length;
+        }
+
+        service.getBroughtLength = function(){
+
+            service.lengthOfBrought = itemsBrought.length ;
+            // alert(service.lengthOfBrought);
+            return ;
+        }
+
+        service.isEmptyLists = function(){
+            if(items.length === 0){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        service.isEmptyBroughtItems = function(){
+            if(itemsBrought.length > 0){
+                return true;
+            } else{
+                return false;
+            }
+        }
     }
 
 })();
