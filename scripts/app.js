@@ -92,7 +92,6 @@
         service.getBroughtLength = function(){
 
             service.lengthOfBrought = itemsBrought.length ;
-            // alert(service.lengthOfBrought);
             return itemsBrought.length;
         }
 
