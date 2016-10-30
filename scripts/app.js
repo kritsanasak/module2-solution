@@ -31,7 +31,7 @@
         already.itemsBroughtLength = ShoppingListCheckOffService.getBroughtLength() ;
 
         already.items = ShoppingListCheckOffService.getItemsBrought();
-        alert(already.items.length);
+
         already.broughtLength = already.items.length;
     }
 
