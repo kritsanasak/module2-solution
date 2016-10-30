@@ -27,13 +27,9 @@
     AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
     function AlreadyBoughtController (ShoppingListCheckOffService){
         var already = this;
-
-        already.itemsBroughtLength = ShoppingListCheckOffService.getBroughtLength() ;
-
         already.items = ShoppingListCheckOffService.getItemsBrought();
-
-        already.broughtLength = already.items.length;
-    }
+        already.broughtLength = already.items.length// ShoppingListCheckOffService.getBroughtLength() ;
+     }
 
     // If not specified, maxItems assumed unlimited
     function ShoppingListCheckOffService() {
@@ -74,7 +70,6 @@
 
         service.removeItem = function(itemIndex){
             service.addBroughtItems(items[itemIndex]);
-            service.getBroughtLength();
             items.splice(itemIndex,1);
         };
 
@@ -98,7 +93,7 @@
 
             service.lengthOfBrought = itemsBrought.length ;
             // alert(service.lengthOfBrought);
-            return ;
+            return itemsBrought.length;
         }
 
         service.isEmptyLists = function(){
@@ -111,9 +106,9 @@
 
         service.isEmptyBroughtItems = function(){
             if(itemsBrought.length > 0){
-                return true;
-            } else{
                 return false;
+            } else{
+                return true;
             }
         }
     }

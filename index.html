@@ -40,11 +40,11 @@
 
     <!-- Already Bought List -->
     <div class="col-md-6" ng-controller="AlreadyBoughtController as alreadyCtrl">
-     <h2>Already Bought:({{alreadyCtrl.broughtLength}})</h2>
+     <h2>Already Bought:({{alreadyCtrl.items.length}})</h2>
      <ul>
        <li ng-repeat="item in alreadyCtrl.items">Bought {{item.name +" " + item.quantity}}</li>
      </ul>
-     <div class="emptyMessage" ng-if="!alreadyCtrl.broughtLength">Nothing bought yet.</div>
+     <div class="emptyMessage" ng-if="!alreadyCtrl.items.length">Nothing bought yet.</div>
     </div>
   </div>
 </div>
